@@ -8,7 +8,6 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { BullModule } from '@nestjs/bull';
 import { ProcessPaymentHandler } from './jobs/process-payment/process.payment.handler';
 import { PaymentsSummaryController } from './payments-summary.controller';
-import { CreatePaymentHandler } from './jobs/create-payment/create-payment.handler';
 
 @Module({
   imports: [
@@ -17,7 +16,7 @@ import { CreatePaymentHandler } from './jobs/create-payment/create-payment.handl
     BullModule.registerQueue({ name: 'payments' }),
     TypeOrmModule.forFeature([Payment]),
   ],
-  providers: [PaymentsService, CreatePaymentHandler, ProcessPaymentHandler],
+  providers: [PaymentsService, ProcessPaymentHandler],
   controllers: [PaymentsController, PaymentsSummaryController],
 })
 export class PaymentsModule {}

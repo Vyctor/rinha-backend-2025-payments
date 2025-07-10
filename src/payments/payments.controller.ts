@@ -13,7 +13,7 @@ export class PaymentsController {
   async receivePayment(
     @Body() payment: CreatePaymentDto,
   ): Promise<{ message: string }> {
-    await this.paymentsQueue.add('create-payment', payment);
+    await this.paymentsQueue.add('process-payment', payment);
     return {
       message: 'Payment received',
     };

@@ -27,26 +27,24 @@ export class ProcessPaymentHandler {
   @Process('process-payment')
   async execute(job: Job<ProcessPaymentDto>): Promise<void> {
     let paymentGateway: PaymentGateway;
-    if (
-      this.defaultPaymentsGateway.apiResponseTime >= 1000 &&
-      this.fallbackPaymentsGateway.apiResponseTime >= 1000
-    ) {
-      throw new Error(
-        'Tempos de resposta muito altos, aguardar reprocessamento',
-      );
-    }
-    if (
-      this.defaultPaymentsGateway.apiResponseTime <
-      this.fallbackPaymentsGateway.apiResponseTime
-    ) {
-      await this.defaultPaymentsGateway.processPayment(job.data);
-      paymentGateway = PaymentGateway.DEFAULT;
-    } else {
-      await this.fallbackPaymentsGateway.processPayment(job.data);
-      paymentGateway = PaymentGateway.FALLBACK;
+
+    try {
+      if (
+        this.defaultPaymentsGateway.apiResponseTime <=
+        this.fallbackPaymentsGateway.apiResponseTime
+      ) {
+        await this.defaultPaymentsGateway.processPayment(job.data);
+        paymentGateway = PaymentGateway.DEFAULT;
+      } else {
+        await this.fallbackPaymentsGateway.processPayment(job.data);
+        paymentGateway = PaymentGateway.FALLBACK;
+      }
+    } catch {
+      throw new Error('Erro ao processar pagamento');
     }
 
-    await this.paymentRepository.update(job.data.id, {
+    await this.paymentRepository.save({
+      ...job.data,
       status: PaymentStatus.PROCESSED,
       gateway: paymentGateway,
     });
