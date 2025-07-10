@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { PaymentGateway } from './payment.gateway';
 import { AxiosError } from 'axios';
 import { EnvironmentService } from 'src/config/environment.service';
-import { Cron, CronExpression, Interval } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class FallbackPaymentGateway implements PaymentGateway {
