@@ -1,0 +1,17 @@
+services:
+  api-database:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: payments
+      POSTGRES_PASSWORD: payments
+      POSTGRES_DB: payments
+    ports:
+      - 5432:5432
+    volumes:
+      - .docker/postgres:/var/lib/postgresql/data
+  api-cache:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - .docker/redis:/data

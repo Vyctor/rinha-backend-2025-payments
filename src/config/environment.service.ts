@@ -5,35 +5,43 @@ import { ConfigService } from '@nestjs/config';
 export class EnvironmentService {
   constructor(private readonly configService: ConfigService) {}
 
-  get APP_PORT(): string | undefined {
-    return this.configService.get<string>('APP_PORT');
+  get APP_PORT(): string {
+    return this.configService.get<string>('APP_PORT')!;
   }
 
-  get DB_URL(): string | undefined {
-    return this.configService.get<string>('DB_URL');
+  get DB_URL(): string {
+    return this.configService.get<string>('DB_URL')!;
   }
 
-  get DB_PORT(): string | undefined {
-    return this.configService.get<string>('DB_PORT');
+  get DB_PORT(): string {
+    return this.configService.get<string>('DB_PORT')!;
   }
 
-  get DB_NAME(): string | undefined {
-    return this.configService.get<string>('DB_NAME');
+  get DB_NAME(): string {
+    return this.configService.get<string>('DB_NAME')!;
   }
 
-  get DB_USER(): string | undefined {
-    return this.configService.get<string>('DB_USER');
+  get DB_USER(): string {
+    return this.configService.get<string>('DB_USER')!;
   }
 
-  get DB_PASS(): string | undefined {
-    return this.configService.get<string>('DB_PASS');
+  get DB_PASS(): string {
+    return this.configService.get<string>('DB_PASS')!;
   }
 
-  get REDIS_HOST(): string | undefined {
-    return this.configService.get<string>('REDIS_HOST');
+  get REDIS_HOST(): string {
+    return this.configService.get<string>('REDIS_HOST')!;
   }
 
-  get REDIS_PORT(): string | undefined {
-    return this.configService.get<string>('REDIS_PORT');
+  get REDIS_PORT(): string {
+    return this.configService.get<string>('REDIS_PORT')!;
+  }
+
+  get PAYMENTS_DEFAULT_GATEWAY_URL(): string {
+    return this.configService.get<string>('PAYMENTS_DEFAULT_GATEWAY_URL')!;
+  }
+
+  get PAYMENTS_FALLBACK_GATEWAY_URL(): string {
+    return this.configService.get<string>('PAYMENTS_FALLBACK_GATEWAY_URL')!;
   }
 }

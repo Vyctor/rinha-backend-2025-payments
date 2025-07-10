@@ -16,6 +16,8 @@ import { EnvironmentService } from './environment.service';
         DB_PASS: Joi.string().required(),
         REDIS_HOST: Joi.string().default('localhost').required(),
         REDIS_PORT: Joi.number().default(6379).required(),
+        PAYMENTS_DEFAULT_GATEWAY_URL: Joi.string().required(),
+        PAYMENTS_FALLBACK_GATEWAY_URL: Joi.string().required(),
       }),
     }),
   ],
