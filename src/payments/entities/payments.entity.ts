@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
@@ -41,5 +42,6 @@ export class Payment {
   gateway: PaymentGateway;
 
   @CreateDateColumn()
+  @Index('idx_payments_created_at')
   createdAt: Date;
 }

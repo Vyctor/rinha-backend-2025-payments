@@ -1,52 +1,18 @@
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, Queue } from 'bullmq';
-import { DefaultPaymentGateway } from 'src/infra/gateways/payments/default-payment.gateway';
-import { FallbackPaymentGateway } from 'src/infra/gateways/payments/fallback-payment.gateway';
-import {
-  Payment,
-  PaymentGateway,
-  PaymentStatus,
-} from 'src/payments/entities/payments.entity';
+import { Process, Processor } from '@nestjs/bull';
+import { Job } from 'bullmq';
 import { ProcessPaymentDto } from './process.payment.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ProcessPaymentUseCase } from '../../usecases/process-payment.usecase';
 
 @Processor('payments')
 export class ProcessPaymentHandler {
-  private readonly logger = new Logger(ProcessPaymentHandler.name);
-
-  constructor(
-    @InjectRepository(Payment)
-    private readonly paymentRepository: Repository<Payment>,
-    private readonly defaultPaymentsGateway: DefaultPaymentGateway,
-    private readonly fallbackPaymentsGateway: FallbackPaymentGateway,
-    @InjectQueue('payments') private readonly paymentsQueue: Queue,
-  ) {}
+  constructor(private readonly processPaymentUseCase: ProcessPaymentUseCase) {}
 
   @Process('process-payment')
   async execute(job: Job<ProcessPaymentDto>): Promise<void> {
-    let paymentGateway: PaymentGateway;
-
     try {
-      if (
-        this.defaultPaymentsGateway.apiResponseTime <=
-        this.fallbackPaymentsGateway.apiResponseTime
-      ) {
-        await this.defaultPaymentsGateway.processPayment(job.data);
-        paymentGateway = PaymentGateway.DEFAULT;
-      } else {
-        await this.fallbackPaymentsGateway.processPayment(job.data);
-        paymentGateway = PaymentGateway.FALLBACK;
-      }
+      await this.processPaymentUseCase.execute(job.data);
     } catch {
-      throw new Error('Erro ao processar pagamento');
+      throw new Error(`Failed to process payment:${job.data.correlationId}`);
     }
-
-    await this.paymentRepository.save({
-      ...job.data,
-      status: PaymentStatus.PROCESSED,
-      gateway: paymentGateway,
-    });
   }
 }

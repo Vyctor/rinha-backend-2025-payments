@@ -13,7 +13,15 @@ async function bootstrap() {
     }),
   );
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(process.env.APP_PORT ?? 9999);
+  await app.listen(process.env.APP_PORT!).then(() => {
+    console.log(
+      `Application is running on: http://localhost:${process.env.APP_PORT}`,
+    );
+  });
 }
 
-bootstrap();
+bootstrap()
+  .then(() => {})
+  .catch((error) => {
+    console.log(error);
+  });

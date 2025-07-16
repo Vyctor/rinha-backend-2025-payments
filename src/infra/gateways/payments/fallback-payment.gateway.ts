@@ -19,11 +19,9 @@ export class FallbackPaymentGateway implements PaymentGateway {
     await this.httpService.axiosRef
       .post(this.environmentService.PAYMENTS_FALLBACK_GATEWAY_URL, payment)
       .catch((error: AxiosError) => {
-        this.logger.error(
-          'Um erro ocorreu ao processar o pagamento: ',
-          error.response?.data,
+        throw new Error(
+          `Erro ao processar pagamento. Detalhes: ${error.message}  - ${error.code}`,
         );
-        throw new Error('Erro ao processar pagamento');
       });
   }
 
@@ -34,7 +32,7 @@ export class FallbackPaymentGateway implements PaymentGateway {
         failing: boolean;
         minResponseTime: number;
       }>(
-        this.environmentService.PAYMENTS_DEFAULT_GATEWAY_URL +
+        this.environmentService.PAYMENTS_FALLBACK_GATEWAY_URL +
           '/service-health',
       );
 
@@ -45,10 +43,6 @@ export class FallbackPaymentGateway implements PaymentGateway {
       }
     } catch {
       this._apiResponseTime = 999_999_999;
-    } finally {
-      this.logger.log(
-        `Tempo de resposta do gateway de pagamento: ${this._apiResponseTime}`,
-      );
     }
   }
 

@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { HealthCheckService, HttpHealthIndicator } from '@nestjs/terminus';
+import {
+  HealthCheckService,
+  HttpHealthIndicator,
+  TypeOrmHealthIndicator,
+} from '@nestjs/terminus';
 import { EnvironmentService } from '../config/environment.service';
 import { AxiosResponse } from 'axios';
 
@@ -13,6 +17,7 @@ export class HealthService {
     private readonly healthCheckService: HealthCheckService,
     private readonly httpCheck: HttpHealthIndicator,
     private readonly environmentService: EnvironmentService,
+    private readonly dbCheck: TypeOrmHealthIndicator,
   ) {
     this.defaultGatewayUrl =
       this.environmentService.PAYMENTS_DEFAULT_GATEWAY_URL + '/service-health';
@@ -44,6 +49,7 @@ export class HealthService {
           'payments-fallback-gateway',
           this.fallbackGatewayUrl,
         ),
+      () => this.dbCheck.pingCheck('database'),
     ]);
   }
 }
