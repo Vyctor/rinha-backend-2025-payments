@@ -11,8 +11,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.1'
-          memory: '15MB'
+          cpus: '0.15'
+          memory: '30MB'
   cache:
     image: redis:latest
     hostname: cache
@@ -23,52 +23,36 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.3'
-          memory: '50MB'
-  postgres:
-    image: postgres:latest
-    hostname: postgres
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: payments
-      POSTGRES_PASSWORD: payments
-    networks:
-      - rinha
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: '155MB'
+          cpus: '0.35'
+          memory: '70MB'
   api01: &api
     hostname: api01
     build:
       context: .
     environment:
       - APP_PORT=8080
-      - DB_URL=postgres
-      - DB_PORT=5432
-      - DB_NAME=payments
-      - DB_USER=payments
-      - DB_PASS=payments
       - REDIS_HOST=cache
       - REDIS_PORT=6379
       - PAYMENTS_DEFAULT_GATEWAY_URL=http://payment-processor-default:8080/payments
       - PAYMENTS_FALLBACK_GATEWAY_URL=http://payment-processor-fallback:8080/payments
     depends_on:
       - cache
-      - postgres
     networks:
       - rinha
       - payment-processor
     deploy:
       resources:
         limits:
-          cpus: '0.30'
-          memory: '65MB'
+          cpus: '0.5'
+          memory: '125MB'
   api02:
     <<: *api
     hostname: api02
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '125MB'
 networks:
   rinha:
     driver: bridge

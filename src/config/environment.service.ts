@@ -9,26 +9,6 @@ export class EnvironmentService {
     return this.configService.get<string>('APP_PORT')!;
   }
 
-  get DB_URL(): string {
-    return this.configService.get<string>('DB_URL')!;
-  }
-
-  get DB_PORT(): string {
-    return this.configService.get<string>('DB_PORT')!;
-  }
-
-  get DB_NAME(): string {
-    return this.configService.get<string>('DB_NAME')!;
-  }
-
-  get DB_USER(): string {
-    return this.configService.get<string>('DB_USER')!;
-  }
-
-  get DB_PASS(): string {
-    return this.configService.get<string>('DB_PASS')!;
-  }
-
   get REDIS_HOST(): string {
     return this.configService.get<string>('REDIS_HOST')!;
   }
