@@ -5,6 +5,7 @@ import { InfraModule } from './infra/infra.module';
 import { HealthModule } from './health/health.module';
 import { EnvironmentService } from './config/environment.service';
 import { BullModule } from '@nestjs/bull';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -12,6 +13,22 @@ import { BullModule } from '@nestjs/bull';
     PaymentsModule,
     InfraModule,
     HealthModule,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [EnvironmentService],
+      useFactory: (environmentService: EnvironmentService) => {
+        return {
+          type: 'mysql',
+          host: environmentService.MYSQL_HOST,
+          port: parseInt(environmentService.MYSQL_PORT),
+          username: environmentService.MYSQL_USER,
+          password: environmentService.MYSQL_PASSWORD,
+          database: environmentService.MYSQL_DATABASE,
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: true,
+        };
+      },
+    }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [EnvironmentService],
@@ -24,10 +41,10 @@ import { BullModule } from '@nestjs/bull';
           defaultJobOptions: {
             removeOnComplete: true,
             removeOnFail: true,
-            attempts: 5,
+            attempts: 2,
             backoff: {
               type: 'fixed',
-              delay: 1500,
+              delay: 2000,
             },
           },
         };

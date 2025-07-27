@@ -9,5 +9,6 @@ import { ConfigModule } from '../config/config.module';
   imports: [TerminusModule, ConfigModule, HttpModule],
   controllers: [HealthController],
   providers: [HealthService],
+  exports: [HealthService],
 })
 export class HealthModule {}

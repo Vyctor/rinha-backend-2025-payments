@@ -24,4 +24,24 @@ export class EnvironmentService {
   get PAYMENTS_FALLBACK_GATEWAY_URL(): string {
     return this.configService.get<string>('PAYMENTS_FALLBACK_GATEWAY_URL')!;
   }
+
+  get MYSQL_HOST(): string {
+    return this.configService.get<string>('MYSQL_HOST')!;
+  }
+
+  get MYSQL_PORT(): string {
+    return this.configService.get<string>('MYSQL_PORT')!;
+  }
+
+  get MYSQL_DATABASE(): string {
+    return this.configService.get<string>('MYSQL_DATABASE')!;
+  }
+
+  get MYSQL_USER(): string {
+    return this.configService.get<string>('MYSQL_USER')!;
+  }
+
+  get MYSQL_PASSWORD(): string {
+    return this.configService.get<string>('MYSQL_PASSWORD')!;
+  }
 }
