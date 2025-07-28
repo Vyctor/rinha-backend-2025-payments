@@ -8,7 +8,7 @@ export class GatewayCircuitBreakerService {
 
   constructor(private readonly redisService: RedisService) {}
 
-  @Cron('*/5 * * * * *')
+  @Cron('*/1 * * * * *')
   async verify() {
     const bestGateway = await this.redisService.get('best-gateway');
     if (bestGateway) {

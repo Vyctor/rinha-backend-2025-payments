@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DefaultPaymentGateway } from '../../infra/gateways/payments/default-payment.gateway';
-import { FallbackPaymentGateway } from '../../infra/gateways/payments/fallback-payment.gateway';
 import { ProcessPaymentDto } from '../jobs/process-payment/process.payment.dto';
 import { PaymentsRepositoryService } from '../repositories/payments.repository.service';
+import { FallbackPaymentGateway } from '../../infra/gateways/payments/fallback-payment.gateway';
 
 @Injectable()
 export class ProcessPaymentUseCase {

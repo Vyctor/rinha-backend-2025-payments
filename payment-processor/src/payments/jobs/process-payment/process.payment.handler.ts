@@ -4,7 +4,9 @@ import { ProcessPaymentDto } from './process.payment.dto';
 import { ProcessPaymentUseCase } from '../../usecases/process-payment.usecase';
 import { GatewayCircuitBreakerService } from '../../../infra/gateways/payments/gateway-circuit-breaker.service';
 
-@Processor('payments', { concurrency: 2 })
+@Processor('payments', {
+  concurrency: 8,
+})
 export class ProcessPaymentHandler extends WorkerHost {
   constructor(
     private readonly processPaymentUseCase: ProcessPaymentUseCase,
@@ -17,8 +19,10 @@ export class ProcessPaymentHandler extends WorkerHost {
   async process(job: Job<ProcessPaymentDto>): Promise<void> {
     const gateway = this.gatewayCircuitBreakerService.bestGateway;
 
-    if (gateway === 'requeue') {
-      await this.paymentsQueue.add('process-payment', job.data);
+    if (gateway === 'requeue' || gateway === 'fallback') {
+      await this.paymentsQueue.add('process-payment', job.data, {
+        delay: 2000,
+      });
       return;
     }
 

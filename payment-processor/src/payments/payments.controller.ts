@@ -10,14 +10,16 @@ import { MoreThan, Repository } from 'typeorm';
 export class PaymentsController {
   constructor(
     @InjectQueue('payments') private readonly paymentsQueue: Queue,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
     @InjectRepository(Payment)
     private readonly paymentsRepository: Repository<Payment>,
   ) {}
 
   @Post()
-  receivePayment(@Body() payment: CreatePaymentDto): { message: string } {
-    void this.paymentsQueue.add('process-payment', payment);
+  async receivePayment(
+    @Body() payment: CreatePaymentDto,
+  ): Promise<{ message: string }> {
+    await this.paymentsQueue.add('process-payment', payment);
     return {
       message: 'Payment received',
     };

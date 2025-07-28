@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity('payments')
-@Index('idx_search', ['createdAt'])
+@Index('idx_search', ['createdAt', 'gateway'])
 export class Payment {
   @PrimaryGeneratedColumn()
   id: number;

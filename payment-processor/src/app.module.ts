@@ -38,10 +38,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         defaultJobOptions: {
           removeOnComplete: true,
           removeOnFail: true,
-          attempts: 3,
+          attempts: 10,
           backoff: {
             type: 'fixed',
-            delay: 1500,
+            delay: 1000,
           },
         },
       }),
