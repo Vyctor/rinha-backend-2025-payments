@@ -1,15 +1,38 @@
 services:
-  mysql:
-    image: mysql:latest
-    hostname: mysql
-
+  payment-gateway-hc:
+    build:
+      context: ./payment-gateway-hc
+      dockerfile: Dockerfile
+    hostname: payment-gateway-hc
+    deploy:
+      resources:
+        limits:
+          memory: 30M
+          cpus: "0.05"
     environment:
-      - MYSQL_DATABASE=payments
-      - MYSQL_USER=payments
-      - MYSQL_PASSWORD=payments
-      - MYSQL_ROOT_PASSWORD=payments
+      - REDIS_HOST=cache
+      - REDIS_PORT=6379
+      - PAYMENTS_DEFAULT_GATEWAY_URL=http://payment-processor-default:8080/payments
+      - PAYMENTS_FALLBACK_GATEWAY_URL=http://payment-processor-fallback:8080/payments
+    networks:
+      - rinha
+      - payment-processor
+  postgres:
+    image: postgres:latest
+    hostname: postgres
+    environment:
+      - POSTGRES_DB=payments
+      - POSTGRES_USER=payments
+      - POSTGRES_PASSWORD=payments
+      - POSTGRES_INITDB_ARGS=--data-checksums
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    deploy:
+      resources:
+        limits:
+          memory: 80M
+          cpus: "0.2"
     ports:
-      - 3306:3306
+      - 5432:5432
     networks:
       - rinha
   nginx:
@@ -20,6 +43,11 @@ services:
       - api02
     ports:
       - 9999:9999
+    deploy:
+      resources:
+        limits:
+          memory: 30M
+          cpus: "0.15"
     volumes:
       - .config/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
@@ -27,6 +55,11 @@ services:
   cache:
     image: redis:latest
     hostname: cache
+    deploy:
+      resources:
+        limits:
+          memory: 40M
+          cpus: "0.2"
     ports:
       - 6379:6379
     networks:
@@ -34,21 +67,27 @@ services:
   api01: &api
     hostname: api01
     build:
-      context: .
+      context: ./payment-processor
+      dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          memory: 85M
+          cpus: "0.45"
     environment:
       - APP_PORT=8080
       - REDIS_HOST=cache
       - REDIS_PORT=6379
       - PAYMENTS_DEFAULT_GATEWAY_URL=http://payment-processor-default:8080/payments
       - PAYMENTS_FALLBACK_GATEWAY_URL=http://payment-processor-fallback:8080/payments
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE=payments
-      - MYSQL_USER=payments
-      - MYSQL_PASSWORD=payments
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DATABASE=payments
+      - POSTGRES_USER=payments
+      - POSTGRES_PASSWORD=payments
     depends_on:
       - cache
-      - mysql
+      - postgres
     networks:
       - rinha
       - payment-processor
