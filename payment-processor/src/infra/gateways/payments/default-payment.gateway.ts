@@ -10,7 +10,7 @@ export class DefaultPaymentGateway implements PaymentGateway {
     private readonly httpService: HttpService,
     private readonly environmentService: EnvironmentService,
   ) {
-    this.httpService.axiosRef.defaults.timeout = 1000;
+    this.httpService.axiosRef.defaults.timeout = 2000;
   }
 
   async processPayment(payment: {
@@ -24,6 +24,7 @@ export class DefaultPaymentGateway implements PaymentGateway {
       );
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 422) {
+        console.error(error.response?.data);
         return;
       }
       throw new Error(`Erro ao processar pagamento.`);

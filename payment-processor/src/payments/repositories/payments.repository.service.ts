@@ -23,8 +23,10 @@ export class PaymentsRepositoryService {
       if (
         error instanceof QueryFailedError &&
         (error.message.includes('ER_DUP_ENTRY') ||
-          error.message.includes('Duplicate entry'))
+          error.message.includes('Duplicate entry') ||
+          error.message.includes('duplicate key'))
       ) {
+        console.error(error.message);
         return;
       }
       throw error;
