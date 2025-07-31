@@ -10,7 +10,7 @@ export class DefaultPaymentGateway implements PaymentGateway {
     private readonly httpService: HttpService,
     private readonly environmentService: EnvironmentService,
   ) {
-    this.httpService.axiosRef.defaults.timeout = 2000;
+    this.httpService.axiosRef.defaults.timeout = 1000;
   }
 
   async processPayment(payment: {

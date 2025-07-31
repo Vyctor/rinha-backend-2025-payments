@@ -16,8 +16,10 @@ export class PaymentsController {
   ) {}
 
   @Post()
-  receivePayment(@Body() payment: CreatePaymentDto): { message: string } {
-    this.paymentsQueue.add('process-payment', payment);
+  async receivePayment(
+    @Body() payment: CreatePaymentDto,
+  ): Promise<{ message: string }> {
+    await this.paymentsQueue.add('process-payment', payment);
     return {
       message: 'Payment received',
     };

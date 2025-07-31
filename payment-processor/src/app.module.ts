@@ -41,7 +41,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           attempts: 10,
           backoff: {
             type: 'fixed',
-            delay: 1000,
+            delay: 350,
           },
         },
       }),
