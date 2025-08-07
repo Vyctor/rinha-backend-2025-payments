@@ -18,7 +18,7 @@ import { PaymentsRepositoryService } from './repositories/payments.repository.se
     BullModule.registerQueue({
       name: 'payments',
       defaultJobOptions: {
-        removeOnComplete: true
+        removeOnComplete: true,
       },
     }),
     TypeOrmModule.forFeature([Payment]),

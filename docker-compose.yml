@@ -7,17 +7,18 @@ services:
       - POSTGRES_USER=payments
       - POSTGRES_PASSWORD=payments
       - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_INITDB_ARGS=--data-checksums
     deploy:
       resources:
         limits:
-          memory: 120M
-          cpus: '0.4'
+          memory: 70M
+          cpus: '0.45'
     ports:
       - 5432:5432
     networks:
       - rinha
   nginx:
-    image: nginx:latest
+    image: nginx:1.25-alpine
     hostname: nginx
     depends_on:
       - api01
@@ -28,18 +29,32 @@ services:
       resources:
         limits:
           memory: 40M
-          cpus: '0.1'
+          cpus: '0.05'
     volumes:
       - .config/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
       - rinha
   cache:
-    image: redis:latest
+    image: redis:7.2-alpine
+    command:
+      [
+        'redis-server',
+        '--appendonly',
+        'no',
+        '--appendfsync',
+        'no',
+        '--save',
+        '',
+        '--maxclients',
+        '20000',
+        '--maxmemory',
+        '40mb',
+      ]
     hostname: cache
     deploy:
       resources:
         limits:
-          memory: 30M
+          memory: 50M
           cpus: '0.1'
     ports:
       - 6379:6379
@@ -52,7 +67,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 80M
+          memory: 95M
           cpus: '0.45'
     environment:
       - APP_PORT=8080

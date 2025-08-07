@@ -12,7 +12,9 @@ export class ProcessPaymentUseCase {
 
   public async execute(input: ProcessPaymentDto): Promise<void> {
     try {
+      console.log('Processing payment', input);
       await this.defaultPaymentsGateway.processPayment(input);
+      console.log('Saving on database', input);
       const payment = this.paymentsRepository.create({
         ...input,
       });

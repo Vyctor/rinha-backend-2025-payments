@@ -1,13 +1,16 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Job } from 'bullmq';
+import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
+import { Job, Queue } from 'bullmq';
 import { ProcessPaymentDto } from './process.payment.dto';
 import { ProcessPaymentUseCase } from '../../usecases/process-payment.usecase';
 
 @Processor('payments', {
-  concurrency: 20,
+  concurrency: 2,
 })
 export class ProcessPaymentHandler extends WorkerHost {
-  constructor(private readonly processPaymentUseCase: ProcessPaymentUseCase) {
+  constructor(
+    private readonly processPaymentUseCase: ProcessPaymentUseCase,
+    @InjectQueue('payments') private readonly paymentsQueue: Queue,
+  ) {
     super();
   }
 
@@ -18,7 +21,8 @@ export class ProcessPaymentHandler extends WorkerHost {
         gateway: 'default',
       });
     } catch {
-      throw new Error(`Failed to process payment:${job.data.correlationId}`);
+      await this.paymentsQueue.add('process-payment', job.data);
+      return;
     }
   }
 }

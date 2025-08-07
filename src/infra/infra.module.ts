@@ -5,18 +5,9 @@ import { FallbackPaymentGateway } from './gateways/payments/fallback-payment.gat
 import { ConfigModule } from '../config/config.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RedisService } from './cache/redis.service';
-import http from 'http';
-
 @Module({
-  imports: [ConfigModule, ScheduleModule.forRoot(), HttpModule.register({
-    httpAgent: new http.Agent(
-      {
-        keepAlive: true,
-        maxSockets: 45,
-        maxFreeSockets: 15
-      }),
-  })],
+  imports: [ConfigModule, ScheduleModule.forRoot(), HttpModule],
   providers: [DefaultPaymentGateway, FallbackPaymentGateway, RedisService],
   exports: [DefaultPaymentGateway, FallbackPaymentGateway, RedisService],
 })
-export class InfraModule { }
+export class InfraModule {}
