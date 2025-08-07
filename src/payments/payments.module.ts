@@ -18,13 +18,7 @@ import { PaymentsRepositoryService } from './repositories/payments.repository.se
     BullModule.registerQueue({
       name: 'payments',
       defaultJobOptions: {
-        removeOnComplete: true,
-        removeOnFail: true,
-        attempts: 2,
-        backoff: {
-          type: 'fixed',
-          delay: 4500,
-        },
+        removeOnComplete: true
       },
     }),
     TypeOrmModule.forFeature([Payment]),
