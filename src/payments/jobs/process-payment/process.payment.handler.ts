@@ -3,7 +3,9 @@ import { Job } from 'bullmq';
 import { ProcessPaymentDto } from './process.payment.dto';
 import { ProcessPaymentUseCase } from '../../usecases/process-payment.usecase';
 
-@Processor('payments', {})
+@Processor('payments', {
+  concurrency: 20,
+})
 export class ProcessPaymentHandler extends WorkerHost {
   constructor(private readonly processPaymentUseCase: ProcessPaymentUseCase) {
     super();
