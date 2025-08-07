@@ -36,7 +36,7 @@ const job = new CronJob("*/5 * * * * *", async () => {
     console.info("Default gateway is faster than fallback, using default");
     await redis.setex("best-gateway", 10000, "default");
   } else {
-    if (defaultGatewayStatus.minResponseTime <= 500) {
+    if (defaultGatewayStatus.minResponseTime <= 100) {
       console.info("Default gateway is better than fallback, using default");
       await redis.setex("best-gateway", 10000, "default");
     } else {

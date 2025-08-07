@@ -9,9 +9,7 @@ export class FallbackPaymentGateway implements PaymentGateway {
   constructor(
     private readonly httpService: HttpService,
     private readonly environmentService: EnvironmentService,
-  ) {
-    this.httpService.axiosRef.defaults.timeout = 1000;
-  }
+  ) {}
 
   async processPayment(payment: {
     correlationId: string;
