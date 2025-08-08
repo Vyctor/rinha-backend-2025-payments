@@ -11,8 +11,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 70M
-          cpus: '0.45'
+          memory: 120M
+          cpus: '0.40'
     ports:
       - 5432:5432
     networks:
@@ -28,8 +28,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 40M
-          cpus: '0.05'
+          memory: 25M
+          cpus: '0.1'
     volumes:
       - .config/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
@@ -48,14 +48,14 @@ services:
         '--maxclients',
         '20000',
         '--maxmemory',
-        '40mb',
+        '35mb',
       ]
     hostname: cache
     deploy:
       resources:
         limits:
-          memory: 50M
-          cpus: '0.1'
+          memory: 30M
+          cpus: '0.2'
     ports:
       - 6379:6379
     networks:
@@ -67,8 +67,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 95M
-          cpus: '0.45'
+          memory: 85M
+          cpus: '0.40'
     environment:
       - APP_PORT=8080
       - REDIS_HOST=cache

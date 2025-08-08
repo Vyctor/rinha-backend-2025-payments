@@ -4,7 +4,11 @@ import { ProcessPaymentDto } from './process.payment.dto';
 import { ProcessPaymentUseCase } from '../../usecases/process-payment.usecase';
 
 @Processor('payments', {
-  concurrency: 2,
+  concurrency: 1,
+  limiter: {
+    max: 3000,
+    duration: 1000,
+  },
 })
 export class ProcessPaymentHandler extends WorkerHost {
   constructor(
@@ -21,7 +25,7 @@ export class ProcessPaymentHandler extends WorkerHost {
         gateway: 'default',
       });
     } catch {
-      await this.paymentsQueue.add('process-payment', job.data);
+      void this.paymentsQueue.add('process-payment', job.data);
       return;
     }
   }

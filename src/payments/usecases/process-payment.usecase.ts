@@ -12,13 +12,8 @@ export class ProcessPaymentUseCase {
 
   public async execute(input: ProcessPaymentDto): Promise<void> {
     try {
-      console.log('Processing payment', input);
       await this.defaultPaymentsGateway.processPayment(input);
-      console.log('Saving on database', input);
-      const payment = this.paymentsRepository.create({
-        ...input,
-      });
-      await this.paymentsRepository.save(payment);
+      await this.paymentsRepository.save(this.paymentsRepository.create(input));
     } catch {
       throw new Error('Erro ao processar pagamento');
     }

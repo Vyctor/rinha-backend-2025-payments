@@ -19,6 +19,12 @@ import { PaymentsRepositoryService } from './repositories/payments.repository.se
       name: 'payments',
       defaultJobOptions: {
         removeOnComplete: true,
+        removeOnFail: true,
+        attempts: 1,
+        backoff: {
+          type: 'fixed',
+          delay: 5000,
+        },
       },
     }),
     TypeOrmModule.forFeature([Payment]),

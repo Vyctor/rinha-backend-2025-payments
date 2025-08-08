@@ -10,7 +10,6 @@ import { MoreThan, Repository } from 'typeorm';
 export class PaymentsController {
   constructor(
     @InjectQueue('payments') private readonly paymentsQueue: Queue,
-
     @InjectRepository(Payment)
     private readonly paymentsRepository: Repository<Payment>,
   ) {}
