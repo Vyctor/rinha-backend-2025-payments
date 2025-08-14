@@ -20,11 +20,7 @@ export class Payment {
   @Column()
   gateway: string;
 
-  @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-  })
+  @Column({})
   amount: number;
 
   @CreateDateColumn()
