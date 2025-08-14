@@ -7,7 +7,7 @@ import { ProcessPaymentUseCase } from '../../usecases/process-payment.usecase';
   concurrency: 1,
   limiter: {
     max: 3000,
-    duration: 1000,
+    duration: 400,
   },
 })
 export class ProcessPaymentHandler extends WorkerHost {

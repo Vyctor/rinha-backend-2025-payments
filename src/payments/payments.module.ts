@@ -20,10 +20,10 @@ import { PaymentsRepositoryService } from './repositories/payments.repository.se
       defaultJobOptions: {
         removeOnComplete: true,
         removeOnFail: true,
-        attempts: 1,
+        attempts: 3,
         backoff: {
           type: 'fixed',
-          delay: 5000,
+          delay: 3000,
         },
       },
     }),
