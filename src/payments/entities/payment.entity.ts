@@ -20,7 +20,9 @@ export class Payment {
   @Column()
   gateway: string;
 
-  @Column({})
+  @Column({
+    type: 'float',
+  })
   amount: number;
 
   @CreateDateColumn()
