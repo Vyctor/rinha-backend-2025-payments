@@ -17,7 +17,7 @@ export class DefaultPaymentGateway implements PaymentGateway {
     await this.httpService.axiosRef
       .post(this.environmentService.PAYMENTS_DEFAULT_GATEWAY_URL, payment)
       .catch((error) => {
-        if (error.response?.status === 422 || error.status === 422) {
+        if (error.response?.status === 422 || error?.status === 422) {
           return;
         }
         throw new Error(`Erro ao processar pagamento.`);

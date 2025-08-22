@@ -1,5 +1,5 @@
-import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Job, Queue } from 'bullmq';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { Job } from 'bullmq';
 import { ProcessPaymentDto } from './process.payment.dto';
 import { ProcessPaymentUseCase } from '../../usecases/process-payment.usecase';
 
@@ -11,10 +11,7 @@ import { ProcessPaymentUseCase } from '../../usecases/process-payment.usecase';
   },
 })
 export class ProcessPaymentHandler extends WorkerHost {
-  constructor(
-    private readonly processPaymentUseCase: ProcessPaymentUseCase,
-    @InjectQueue('payments') private readonly paymentsQueue: Queue,
-  ) {
+  constructor(private readonly processPaymentUseCase: ProcessPaymentUseCase) {
     super();
   }
 
@@ -25,8 +22,14 @@ export class ProcessPaymentHandler extends WorkerHost {
         gateway: 'default',
       });
     } catch {
-      void this.paymentsQueue.add('process-payment', job.data);
-      return;
+      await this.processPaymentUseCase
+        .execute({
+          ...job.data,
+          gateway: 'fallback',
+        })
+        .catch(() => {
+          throw new Error('Erro ao processar pagamento');
+        });
     }
   }
 }

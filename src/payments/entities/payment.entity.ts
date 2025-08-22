@@ -21,7 +21,9 @@ export class Payment {
   gateway: string;
 
   @Column({
-    type: 'float',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
   })
   amount: number;
 

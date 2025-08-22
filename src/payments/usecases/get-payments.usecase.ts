@@ -23,8 +23,16 @@ export class GetPaymentsUseCase {
       totalTransactionsDefault,
       totalAmountDefault,
     ] = await Promise.all([
-      0,
-      0,
+      this.paymentsRepository.count({
+        where: {
+          ...where,
+          gateway: 'fallback',
+        },
+      }),
+      this.paymentsRepository.sum('amount', {
+        ...where,
+        gateway: 'fallback',
+      }),
       this.paymentsRepository.count({
         where: {
           ...where,

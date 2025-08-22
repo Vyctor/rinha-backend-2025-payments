@@ -11,7 +11,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 75M
+          memory: 70M
           cpus: '0.25'
     ports:
       - 5432:5432
@@ -28,7 +28,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 25M
+          memory: 35M
           cpus: '0.1'
     volumes:
       - .config/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -45,16 +45,12 @@ services:
         'no',
         '--save',
         '',
-        '--maxclients',
-        '20000',
-        '--maxmemory',
-        '35mb',
       ]
     hostname: cache
     deploy:
       resources:
         limits:
-          memory: 30M
+          memory: 45M
           cpus: '0.15'
     ports:
       - 6379:6379
@@ -67,7 +63,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 110M
+          memory: 100M
           cpus: '0.50'
     environment:
       - APP_PORT=8080
